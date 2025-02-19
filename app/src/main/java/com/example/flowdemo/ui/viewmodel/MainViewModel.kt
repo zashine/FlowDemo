@@ -3,8 +3,10 @@ package com.example.flowdemo.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.filter
@@ -31,8 +33,25 @@ class MainViewModel : ViewModel() {
     private val _stateFlow = MutableStateFlow(0) // mutable
     val stateFlow = _stateFlow.asStateFlow() // read only
 
+
+    private val _sharedFlow = MutableSharedFlow<Int>() // mutable
+    val sharedFlow = _sharedFlow.asSharedFlow() // read only
+
     init {
         collectFlow3()
+
+        viewModelScope.launch {
+            sharedFlow.collect {
+                delay(3000L)
+
+            }
+        }
+    }
+
+    fun squareNumber(number: Int) {
+        viewModelScope.launch {
+            _sharedFlow.emit(number * number)
+        }
     }
 
     fun incrementCounter() {

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
@@ -45,8 +46,13 @@ class MainActivity : ComponentActivity() {
                     )
                 }*/
                 val viewModel by viewModels<MainViewModel>()
-                val time = viewModel.countDownFLow.collectAsState(10)
+                // val time = viewModel.countDownFLow.collectAsState(10)
                 val count = viewModel.stateFlow.collectAsState(0)
+
+                LaunchedEffect(key1 = true) {
+
+                }
+
                 Box(modifier = Modifier.fillMaxSize()) {
                     /*Text(
                         text = time.value.toString(),
