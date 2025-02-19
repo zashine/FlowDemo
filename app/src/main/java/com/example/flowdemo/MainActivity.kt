@@ -16,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.flowdemo.ui.theme.FlowDemoTheme
 import com.example.flowdemo.ui.viewmodel.MainViewModel
+import com.example.flowdemo.ui.viewmodel.SubViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -37,14 +38,14 @@ class MainActivity : ComponentActivity() {
             // do ui refresh
         }
 
-        setContent {
+        /*setContent {
             FlowDemoTheme {
-                /*Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                *//*Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(
                         name = "Android",
                         modifier = Modifier.padding(innerPadding)
                     )
-                }*/
+                }*//*
                 val viewModel by viewModels<MainViewModel>()
                 // val time = viewModel.countDownFLow.collectAsState(10)
                 val count = viewModel.stateFlow.collectAsState(0)
@@ -54,15 +55,23 @@ class MainActivity : ComponentActivity() {
                 }
 
                 Box(modifier = Modifier.fillMaxSize()) {
-                    /*Text(
+                    *//*Text(
                         text = time.value.toString(),
                         fontSize = 30.sp,
                         modifier = Modifier.align(Alignment.Center)
-                    )*/
+                    )*//*
                     Button(onClick = { viewModel.incrementCounter() }) {
                         Text(text = "Click me: ${count.value}")
                     }
                 }
+            }
+        }*/
+
+        setContent {
+            FlowDemoTheme {
+                val viewModel by viewModels<SubViewModel>()
+                // val time = viewModel.countDownFLow.collectAsState(10)
+                Text(text = viewModel.numberString)
             }
         }
     }

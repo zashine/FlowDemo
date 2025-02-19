@@ -2,6 +2,7 @@ package com.example.flowdemo.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.flowdemo.DefaultDispatchers
 import com.example.flowdemo.DispatcherProvider
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -19,8 +20,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-class MainViewModel(
-    private val dispatchers: DispatcherProvider
+class MainViewModel @JvmOverloads constructor(
+    private val dispatchers: DispatcherProvider = DefaultDispatchers()
 ) : ViewModel() {
 
     val countDownFLow = flow {
