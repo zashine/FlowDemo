@@ -2,6 +2,7 @@ package com.example.flowdemo.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.flowdemo.DispatcherProvider
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,15 +13,18 @@ import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.fold
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-class MainViewModel : ViewModel() {
+class MainViewModel(
+    private val dispatchers: DispatcherProvider
+) : ViewModel() {
 
-    val countDownFLow = flow<Int> {
-        val startingValue = 10
+    val countDownFLow = flow {
+        val startingValue = 5
         var currentValue = startingValue
         emit(startingValue)
         while (currentValue > 0) {
@@ -28,28 +32,34 @@ class MainViewModel : ViewModel() {
             currentValue--
             emit(currentValue)
         }
-    }
+    }.flowOn(dispatchers.main)
 
     private val _stateFlow = MutableStateFlow(0) // mutable
     val stateFlow = _stateFlow.asStateFlow() // read only
 
 
-    private val _sharedFlow = MutableSharedFlow<Int>() // mutable
+    private val _sharedFlow = MutableSharedFlow<Int>(replay = 5) // mutable
     val sharedFlow = _sharedFlow.asSharedFlow() // read only
 
     init {
-        collectFlow3()
-
-        viewModelScope.launch {
+        squareNumber(3)
+        // collectFlow3()
+        viewModelScope.launch(dispatchers.main) {
+            sharedFlow.collect {
+                delay(2000L)
+                println("FIRST FLOW: The received number is $it")
+            }
+        }
+        viewModelScope.launch(dispatchers.main) {
             sharedFlow.collect {
                 delay(3000L)
-
+                println("SECOND FLOW: The received number is $it")
             }
         }
     }
 
     fun squareNumber(number: Int) {
-        viewModelScope.launch {
+        viewModelScope.launch(dispatchers.main) {
             _sharedFlow.emit(number * number)
         }
     }
@@ -84,12 +94,12 @@ class MainViewModel : ViewModel() {
     private fun collectFlow3() {
         val flow0 = (1..5).asFlow()
 
-        val flow1 = flow<Int> {
+        val flow1 = flow {
             emit(1)
             delay(500L)
             emit(2)
         }
-        viewModelScope.launch {
+        viewModelScope.launch(dispatchers.main) {
             flow1.flatMapConcat { value ->
                 flow {
                     emit(value + 1)
