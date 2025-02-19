@@ -5,9 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.flowdemo.DispatcherProvider
 import com.example.flowdemo.ui.bean.Post
 import com.example.flowdemo.ui.bean.ProfileState
 import com.example.flowdemo.ui.bean.User
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asFlow
@@ -17,8 +19,12 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.zip
+import javax.inject.Inject
 
-class SubViewModel: ViewModel() {
+@HiltViewModel
+class SubViewModel @Inject constructor(
+    private val dispatcher: DispatcherProvider
+): ViewModel() {
 
     private val isAuthenticated = MutableStateFlow(true)
     private val user = MutableStateFlow<User?>(null)
