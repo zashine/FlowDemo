@@ -2,6 +2,7 @@ package com.example.flowdemo
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import javax.inject.Inject
 
 interface DispatcherProvider {
 
@@ -10,7 +11,7 @@ interface DispatcherProvider {
     val default: CoroutineDispatcher
 }
 
-class DefaultDispatchers : DispatcherProvider {
+class DefaultDispatchers @Inject constructor() : DispatcherProvider {
     override val main: CoroutineDispatcher
         get() = Dispatchers.Main
     override val io: CoroutineDispatcher

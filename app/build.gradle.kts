@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.hilt.android)
 }
 
 android {
@@ -37,6 +39,11 @@ android {
     buildFeatures {
         compose = true
     }
+
+}
+
+kapt {
+    correctErrorTypes = true
 }
 
 dependencies {
@@ -61,4 +68,7 @@ dependencies {
     implementation(libs.turbine)
     implementation(libs.truth)
     implementation(libs.kotlinx.coroutines.test)
+
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
 }

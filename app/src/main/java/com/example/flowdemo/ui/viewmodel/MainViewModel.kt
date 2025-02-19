@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.flowdemo.DefaultDispatchers
 import com.example.flowdemo.DispatcherProvider
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,9 +20,11 @@ import kotlinx.coroutines.flow.fold
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MainViewModel @JvmOverloads constructor(
-    private val dispatchers: DispatcherProvider = DefaultDispatchers()
+@HiltViewModel
+class MainViewModel @Inject constructor(
+    private val dispatchers: DispatcherProvider
 ) : ViewModel() {
 
     val countDownFLow = flow {

@@ -17,10 +17,16 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.example.flowdemo.ui.theme.FlowDemoTheme
 import com.example.flowdemo.ui.viewmodel.MainViewModel
 import com.example.flowdemo.ui.viewmodel.SubViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
+/**
+ * 在使用 Hilt 进行依赖注入的 Android 组件（如 Activity、Fragment、View 等）上，
+ * 需要添加 @AndroidEntryPoint 注解，以便 Hilt 能够识别并注入所需的依赖项。
+ */
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val viewModel by viewModels<MainViewModel>()
