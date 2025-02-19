@@ -3,7 +3,9 @@ package com.example.flowdemo.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapConcat
@@ -26,8 +28,15 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    private val _stateFlow = MutableStateFlow(0) // mutable
+    val stateFlow = _stateFlow.asStateFlow() // read only
+
     init {
         collectFlow3()
+    }
+
+    fun incrementCounter() {
+        _stateFlow.value += 1
     }
 
     private fun collectFlow() {
