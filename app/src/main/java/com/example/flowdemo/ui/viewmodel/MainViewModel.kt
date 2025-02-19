@@ -3,11 +3,17 @@ package com.example.flowdemo.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.count
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.fold
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-class MainViewModel: ViewModel() {
+class MainViewModel : ViewModel() {
 
     val countDownFLow = flow<Int> {
         val startingValue = 10
@@ -21,14 +27,49 @@ class MainViewModel: ViewModel() {
     }
 
     init {
-        collectFlow()
+        collectFlow3()
     }
 
     private fun collectFlow() {
         viewModelScope.launch {
-            countDownFLow.collectLatest { time ->
-                delay(1500L)
-                println("The current time is $time")
+            val count = countDownFLow
+                .filter { time -> time % 2 == 0 }
+                .map { time -> time * time }
+                .onEach { time -> println(time) }
+                .count {
+                    it % 2 == 0
+                }
+            println("count is $count")
+        }
+    }
+
+    private fun collectFlow2() {
+        viewModelScope.launch {
+            val reduceResult = countDownFLow
+                .fold(100) { accumulator, value ->
+                    accumulator + value
+                }
+            println("The count is $reduceResult")
+        }
+    }
+
+    private fun collectFlow3() {
+        val flow0 = (1..5).asFlow()
+
+        val flow1 = flow<Int> {
+            emit(1)
+            delay(500L)
+            emit(2)
+        }
+        viewModelScope.launch {
+            flow1.flatMapConcat { value ->
+                flow {
+                    emit(value + 1)
+                    delay(500L)
+                    emit(value + 2)
+                }
+            }.collect {
+                println("The value is $it")
             }
         }
     }
